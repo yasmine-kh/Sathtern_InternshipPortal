@@ -24,6 +24,20 @@ public class StudentService : IStudentService
             : ServiceResult<Student>.Ok(student);
     }
 
+    public async Task<ServiceResult<Student>> GetByEmailAsync(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            return ServiceResult<Student>.Error("Email is required.");
+        }
+
+        var student = await _students.GetByEmailAsync(email.Trim());
+
+        return student is null
+            ? ServiceResult<Student>.NotFound($"No student is registered with '{email.Trim()}'.")
+            : ServiceResult<Student>.Ok(student);
+    }
+
     public async Task<ServiceResult<Student>> CreateAsync(Student student)
     {
         var validation = Validate(student);

@@ -28,6 +28,16 @@ public class StudentsController : ApiControllerBase
     public async Task<IActionResult> GetById(int id)
         => FromResult(await _students.GetByIdAsync(id), s => s.ToDto());
 
+    /// <summary>
+    /// Looks up a single student by email address. Used by the frontend in
+    /// place of downloading the whole student list.
+    /// </summary>
+    [HttpGet("by-email")]
+    [ProducesResponseType(typeof(StudentDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetByEmail([FromQuery] string email)
+        => FromResult(await _students.GetByEmailAsync(email), s => s.ToDto());
+
     /// <summary>Registers a new student.</summary>
     [HttpPost]
     [ProducesResponseType(typeof(StudentDto), StatusCodes.Status201Created)]

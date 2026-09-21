@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, catchError, of, throwError } from 'rxjs';
 
 import { Student, StudentRequest } from '../models/student';
 import { API_BASE_URL } from './api.config';
@@ -19,17 +19,18 @@ export class StudentService {
   }
 
   /**
-   * Resolves a student by email address.
+   * Resolves a student by email address via GET /api/Students/by-email.
    *
-   * The API exposes no by-email endpoint, so this filters the full list
-   * client-side. Fine for a dev-sized dataset; replace with a dedicated
-   * endpoint (the repository already has GetByEmailAsync) before this grows.
+   * Resolves to null when nobody is registered with that address, so callers
+   * can treat "not found" as a normal outcome rather than an error.
    */
   findByEmail(email: string): Observable<Student | null> {
-    const needle = email.trim().toLowerCase();
+    const params = new HttpParams().set('email', email.trim());
 
-    return this.getAll().pipe(
-      map((students) => students.find((s) => s.email.toLowerCase() === needle) ?? null),
+    return this.http.get<Student>(`${this.baseUrl}/by-email`, { params }).pipe(
+      catchError((error: HttpErrorResponse) =>
+        error.status === 404 ? of(null) : throwError(() => error),
+      ),
     );
   }
 
