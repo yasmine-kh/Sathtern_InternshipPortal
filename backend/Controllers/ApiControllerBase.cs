@@ -21,12 +21,32 @@ public abstract class ApiControllerBase : ControllerBase
         => result.IsSuccess ? NoContent() : Failure(result);
 
     /// <summary>
+    /// Maps a value-returning result through a projection, so controllers return
+    /// DTOs rather than entities. 200 OK on success.
+    /// </summary>
+    protected IActionResult FromResult<T, TOut>(ServiceResult<T> result, Func<T, TOut> map)
+        => result.IsSuccess ? Ok(map(result.Value!)) : Failure(result);
+
+    /// <summary>
     /// Maps a result from a create operation, returning 201 Created with a
     /// Location header pointing at <paramref name="actionName"/>.
     /// </summary>
     protected IActionResult CreatedFromResult<T>(ServiceResult<T> result, string actionName, Func<T, object> routeValues)
         => result.IsSuccess
             ? CreatedAtAction(actionName, routeValues(result.Value!), result.Value)
+            : Failure(result);
+
+    /// <summary>
+    /// Create variant that projects the created entity through <paramref name="map"/>
+    /// before serialising it.
+    /// </summary>
+    protected IActionResult CreatedFromResult<T, TOut>(
+        ServiceResult<T> result,
+        string actionName,
+        Func<T, object> routeValues,
+        Func<T, TOut> map)
+        => result.IsSuccess
+            ? CreatedAtAction(actionName, routeValues(result.Value!), map(result.Value!))
             : Failure(result);
 
     private IActionResult Failure(ServiceResult result)

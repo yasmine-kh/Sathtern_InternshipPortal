@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using backend.Data;
 using backend.Repositories;
 using backend.Services;
@@ -37,7 +38,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // --- MVC / Controllers ----------------------------------------------------
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Serialise ApplicationStatus as "Pending"/"Accepted"/"Rejected"
+        // rather than 0/1/2.
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 var app = builder.Build();
 
