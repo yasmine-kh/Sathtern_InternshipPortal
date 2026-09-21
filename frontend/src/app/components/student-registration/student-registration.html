@@ -1,0 +1,67 @@
+<section class="registration">
+  <header>
+    <h1>Student registration</h1>
+    <p class="subtitle">Create your profile to start applying for internships.</p>
+  </header>
+
+  @if (state().kind === 'success') {
+    <div class="alert alert--success" role="status">
+      <strong>You're registered.</strong>
+      <span>Welcome, {{ $any(state()).student.fullName }}.</span>
+      <button type="button" class="link" (click)="reset()">Register another student</button>
+    </div>
+  }
+
+  @if (state().kind === 'error') {
+    <div class="alert alert--error" role="alert">
+      {{ $any(state()).message }}
+    </div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div class="field">
+      <label for="fullName">Full name <span aria-hidden="true">*</span></label>
+      <input id="fullName" type="text" formControlName="fullName" autocomplete="name" />
+      @if (hasError('fullName', 'required')) {
+        <p class="error">Your full name is required.</p>
+      }
+      @if (hasError('fullName', 'maxlength')) {
+        <p class="error">Keep this under 150 characters.</p>
+      }
+    </div>
+
+    <div class="field">
+      <label for="email">Email <span aria-hidden="true">*</span></label>
+      <input id="email" type="email" formControlName="email" autocomplete="email" />
+      @if (hasError('email', 'required')) {
+        <p class="error">An email address is required.</p>
+      }
+      @if (hasError('email', 'email')) {
+        <p class="error">That doesn't look like a valid email address.</p>
+      }
+      @if (hasError('email', 'maxlength')) {
+        <p class="error">Keep this under 255 characters.</p>
+      }
+    </div>
+
+    <div class="field">
+      <label for="phone">Phone <span class="optional">(optional)</span></label>
+      <input id="phone" type="tel" formControlName="phone" autocomplete="tel" />
+      @if (hasError('phone', 'maxlength')) {
+        <p class="error">Keep this under 30 characters.</p>
+      }
+    </div>
+
+    <div class="field">
+      <label for="university">University <span class="optional">(optional)</span></label>
+      <input id="university" type="text" formControlName="university" />
+      @if (hasError('university', 'maxlength')) {
+        <p class="error">Keep this under 200 characters.</p>
+      }
+    </div>
+
+    <button type="submit" class="submit" [disabled]="state().kind === 'saving'">
+      {{ state().kind === 'saving' ? 'Registering…' : 'Register' }}
+    </button>
+  </form>
+</section>

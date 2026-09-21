@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
@@ -6,7 +6,8 @@ import { RouterOutlet } from '@angular/router';
   selector: 'app-root',
   styleUrl: './app.scss',
   templateUrl: './app.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
-  protected readonly title = signal('frontend');
+  protected readonly title = signal('Sathtern Internship Portal');
 }
