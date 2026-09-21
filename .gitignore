@@ -13,12 +13,14 @@
 appsettings.Development.json
 appsettings.*.local.json
 
-## Angular / Node (frontend — added later)
-# /frontend/node_modules/
-# /frontend/dist/
-# /frontend/.angular/
-# /frontend/npm-debug.log*
-# /frontend/.env
+## Angular / Node (frontend)
+# frontend/.gitignore already covers node_modules, dist and .angular/cache;
+# these are repeated here so the repo root alone is enough to keep them out.
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.angular/
+/frontend/npm-debug.log*
+/frontend/.env
 
 ## OS / editor
 .DS_Store
