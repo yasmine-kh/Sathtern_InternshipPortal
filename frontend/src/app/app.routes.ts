@@ -26,13 +26,13 @@ export const routes: Routes = [
         (m) => m.InternshipDetail,
       ),
   },
-  // Linked from the nav but not built yet.
   {
     path: 'my-applications',
     title: 'My applications',
-    component: ComingSoon,
-    data: { feature: 'My Applications' },
+    loadComponent: () =>
+      import('./components/my-applications/my-applications').then((m) => m.MyApplications),
   },
+  // Linked from the nav but not built yet.
   {
     path: 'admin',
     title: 'Admin',

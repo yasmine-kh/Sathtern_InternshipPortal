@@ -1,0 +1,96 @@
+<section class="mine">
+  <header>
+    <h1>My applications</h1>
+    <p class="subtitle">Track the internships you've applied for.</p>
+  </header>
+
+  @if (state().kind === 'prompt' || state().kind === 'unregistered' || state().kind === 'error') {
+    <p class="hint">There's no sign-in yet — enter the email you registered with.</p>
+
+    <form [formGroup]="form" (ngSubmit)="lookup()" novalidate class="lookup">
+      <div class="field">
+        <label class="sr-only" for="email">Your email</label>
+        <input id="email" type="email" formControlName="email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+      <button type="submit" class="submit">Find my applications</button>
+    </form>
+
+    @if (hasError('required')) {
+      <p class="error">Your email is required.</p>
+    }
+    @if (hasError('email')) {
+      <p class="error">That doesn't look like a valid email address.</p>
+    }
+  }
+
+  @if (state().kind === 'unregistered') {
+    <div class="alert alert--error" role="alert">
+      No student is registered with {{ $any(state()).email }}.
+      <a routerLink="/register">Register first</a>
+    </div>
+  }
+
+  @if (state().kind === 'error') {
+    <div class="alert alert--error" role="alert">{{ $any(state()).message }}</div>
+  }
+
+  @if (state().kind === 'loading') {
+    <p class="muted" role="status">Loading…</p>
+  }
+
+  @if (state(); as view) {
+    @if (view.kind === 'loaded') {
+      <div class="who">
+        <span>Showing applications for <strong>{{ view.student.fullName }}</strong></span>
+        <button type="button" class="link" (click)="reset()">Use a different email</button>
+      </div>
+
+      @if (withdrawError()) {
+        <div class="alert alert--error" role="alert">{{ withdrawError() }}</div>
+      }
+
+      @if (view.applications.length === 0) {
+        <div class="empty">
+          <p>You haven't applied to anything yet.</p>
+          <a class="cta" routerLink="/internships">Browse internships</a>
+        </div>
+      } @else {
+        <ul class="rows">
+          @for (application of view.applications; track application.id) {
+            <li class="row">
+              <div class="row__main">
+                <h2 class="row__title">
+                  {{ application.internship?.title ?? 'Internship #' + application.internshipId }}
+                </h2>
+                @if (application.internship?.company; as company) {
+                  <p class="row__company">{{ company }}</p>
+                }
+                <p class="row__date">
+                  Applied {{ application.appliedDate | date: 'mediumDate' }}
+                </p>
+              </div>
+
+              <div class="row__side">
+                <span [class]="badgeClass(application.status)">{{ application.status }}</span>
+
+                @if (confirmingWithdraw() === application.id) {
+                  <div class="confirm">
+                    <span>Withdraw this application?</span>
+                    <button type="button" class="danger" (click)="confirmWithdraw(application.id)">
+                      Yes, withdraw
+                    </button>
+                    <button type="button" class="ghost" (click)="cancelWithdraw()">Cancel</button>
+                  </div>
+                } @else {
+                  <button type="button" class="ghost" (click)="askWithdraw(application.id)">
+                    Withdraw
+                  </button>
+                }
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    }
+  }
+</section>
