@@ -18,6 +18,14 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./components/internship-list/internship-list').then((m) => m.InternshipList),
   },
+  {
+    path: 'internships/:id',
+    title: 'Internship',
+    loadComponent: () =>
+      import('./components/internship-detail/internship-detail').then(
+        (m) => m.InternshipDetail,
+      ),
+  },
   // Linked from the nav but not built yet.
   {
     path: 'my-applications',

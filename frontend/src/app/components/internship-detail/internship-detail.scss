@@ -1,0 +1,175 @@
+.detail {
+  max-width: 44rem;
+  margin: 2.5rem auto;
+  padding: 0 1rem;
+}
+
+.back {
+  display: inline-block;
+  margin-bottom: 1.25rem;
+  color: #3b6fd4;
+  text-decoration: none;
+  font-size: 0.92rem;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.6rem;
+}
+
+h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1.1rem;
+}
+
+.company {
+  margin: 0 0 1.25rem;
+  font-weight: 600;
+  color: #3b6fd4;
+}
+
+.meta {
+  margin: 0 0 1.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  font-size: 0.9rem;
+  color: #5a6472;
+
+  div {
+    display: flex;
+    gap: 0.35rem;
+  }
+
+  dt {
+    font-weight: 600;
+
+    &::after {
+      content: ":";
+    }
+  }
+
+  dd {
+    margin: 0;
+  }
+}
+
+.description {
+  margin-bottom: 2rem;
+
+  p {
+    margin: 0;
+    line-height: 1.55;
+    color: #404b5c;
+  }
+}
+
+.apply {
+  padding: 1.25rem;
+  border: 1px solid #dde2ea;
+  border-radius: 10px;
+  background: #fafbfd;
+}
+
+.hint {
+  margin: 0 0 1rem;
+  font-size: 0.88rem;
+  color: #5a6472;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+input {
+  padding: 0.6rem 0.7rem;
+  border: 1px solid #c6ccd6;
+  border-radius: 6px;
+  font: inherit;
+
+  &:focus {
+    outline: 2px solid #3b6fd4;
+    outline-offset: 1px;
+    border-color: #3b6fd4;
+  }
+
+  &:disabled {
+    background: #f2f4f7;
+  }
+}
+
+.error {
+  margin: 0;
+  color: #b3261e;
+  font-size: 0.85rem;
+}
+
+.submit {
+  padding: 0.65rem 1.4rem;
+  border: 0;
+  border-radius: 6px;
+  background: #3b6fd4;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:disabled {
+    background: #9aa8c4;
+    cursor: default;
+  }
+}
+
+.alert {
+  margin-bottom: 1.25rem;
+  padding: 0.85rem 1rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+
+  &--success {
+    background: #e6f4ec;
+    border: 1px solid #1e7a47;
+    color: #14532d;
+  }
+
+  &--error {
+    background: #fdecea;
+    border: 1px solid #b3261e;
+    color: #8c1d18;
+  }
+
+  a {
+    color: inherit;
+    font-weight: 600;
+  }
+}
+
+.link {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.muted {
+  color: #5a6472;
+}

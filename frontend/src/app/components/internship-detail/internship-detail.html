@@ -1,0 +1,83 @@
+<section class="detail">
+  <a class="back" routerLink="/internships">&larr; All internships</a>
+
+  @if (state() === 'loading') {
+    <p class="muted" role="status">Loading…</p>
+  }
+
+  @if (state() === 'notfound') {
+    <div class="alert alert--error" role="alert">
+      That internship doesn't exist. It may have been removed.
+    </div>
+  }
+
+  @if (state() === 'error') {
+    <div class="alert alert--error" role="alert">{{ loadError() }}</div>
+  }
+
+  @if (internship(); as job) {
+    <header>
+      <h1>{{ job.title }}</h1>
+      <p class="company">{{ job.company }}</p>
+    </header>
+
+    <dl class="meta">
+      @if (job.location) {
+        <div><dt>Location</dt><dd>{{ job.location }}</dd></div>
+      }
+      @if (job.duration) {
+        <div><dt>Duration</dt><dd>{{ job.duration }}</dd></div>
+      }
+      <div><dt>Posted</dt><dd>{{ job.postedDate | date: 'mediumDate' }}</dd></div>
+    </dl>
+
+    @if (job.description) {
+      <div class="description">
+        <h2>About this role</h2>
+        <p>{{ job.description }}</p>
+      </div>
+    }
+
+    <div class="apply">
+      <h2>Apply</h2>
+
+      @if (applyState().kind === 'success') {
+        <div class="alert alert--success" role="status">
+          <strong>Application submitted.</strong>
+          <span>Status: {{ $any(applyState()).application.status }}.</span>
+          <button type="button" class="link" (click)="applyAgain()">Apply as someone else</button>
+        </div>
+      } @else {
+        @if (applyState().kind === 'error') {
+          <div class="alert alert--error" role="alert">
+            {{ $any(applyState()).message }}
+            @if ($any(applyState()).unregistered) {
+              <a routerLink="/register">Register first</a>
+            }
+          </div>
+        }
+
+        <p class="hint">
+          There's no sign-in yet — enter the email address you registered with.
+        </p>
+
+        <form [formGroup]="form" (ngSubmit)="apply()" novalidate>
+          <div class="field">
+            <label for="email">Your email</label>
+            <input id="email" type="email" formControlName="email" autocomplete="email" />
+            @if (hasError('required')) {
+              <p class="error">Your email is required.</p>
+            }
+            @if (hasError('email')) {
+              <p class="error">That doesn't look like a valid email address.</p>
+            }
+          </div>
+
+          <button type="submit" class="submit" [disabled]="applyState().kind === 'submitting'">
+            {{ applyState().kind === 'submitting' ? 'Submitting…' : 'Apply now' }}
+          </button>
+        </form>
+      }
+    </div>
+  }
+</section>
