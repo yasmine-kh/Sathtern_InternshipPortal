@@ -1,0 +1,26 @@
+## .NET / ASP.NET Core
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+*.user
+*.suo
+*.userprefs
+.vs/
+*.swp
+
+# Local / environment-specific configuration
+appsettings.Development.json
+appsettings.*.local.json
+
+## Angular / Node (frontend — added later)
+# /frontend/node_modules/
+# /frontend/dist/
+# /frontend/.angular/
+# /frontend/npm-debug.log*
+# /frontend/.env
+
+## OS / editor
+.DS_Store
+Thumbs.db
+.idea/
