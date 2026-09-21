@@ -1,1 +1,22 @@
-<router-outlet />
+<nav class="topnav">
+  <a class="brand" routerLink="/internships">Sathtern</a>
+
+  <ul class="links">
+    <li>
+      <a routerLink="/register" routerLinkActive="active">Register</a>
+    </li>
+    <li>
+      <a routerLink="/internships" routerLinkActive="active">Internships</a>
+    </li>
+    <li>
+      <a routerLink="/my-applications" routerLinkActive="active">My Applications</a>
+    </li>
+    <li>
+      <a routerLink="/admin" routerLinkActive="active">Admin</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+  <router-outlet />
+</main>

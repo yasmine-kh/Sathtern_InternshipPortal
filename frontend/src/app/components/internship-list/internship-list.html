@@ -1,0 +1,65 @@
+<section class="listings">
+  <header>
+    <h1>Internships</h1>
+    <p class="subtitle">Browse open positions and apply.</p>
+  </header>
+
+  <div class="searchbar">
+    <label class="sr-only" for="search">Search internships</label>
+    <input
+      id="search"
+      type="search"
+      [formControl]="search"
+      placeholder="Search by title, company or location"
+      autocomplete="off"
+    />
+    @if (search.value) {
+      <button type="button" class="clear" (click)="clearSearch()">Clear</button>
+    }
+  </div>
+
+  @if (state() === 'error') {
+    <div class="alert alert--error" role="alert">{{ errorMessage() }}</div>
+  }
+
+  @if (state() === 'loading') {
+    <p class="muted" role="status">Loading internships…</p>
+  } @else if (state() === 'loaded' && results().length === 0) {
+    <p class="muted empty">
+      @if (search.value) {
+        No internships match “{{ search.value }}”.
+      } @else {
+        No internships have been posted yet.
+      }
+    </p>
+  }
+
+  <ul class="cards">
+    @for (internship of results(); track internship.id) {
+      <li class="card">
+        <a class="card__link" [routerLink]="['/internships', internship.id]">
+          <h2 class="card__title">{{ internship.title }}</h2>
+        </a>
+
+        <p class="card__company">{{ internship.company }}</p>
+
+        <dl class="card__meta">
+          @if (internship.location) {
+            <div><dt>Location</dt><dd>{{ internship.location }}</dd></div>
+          }
+          @if (internship.duration) {
+            <div><dt>Duration</dt><dd>{{ internship.duration }}</dd></div>
+          }
+        </dl>
+
+        @if (preview(internship.description); as text) {
+          <p class="card__description">{{ text }}</p>
+        }
+
+        <a class="card__cta" [routerLink]="['/internships', internship.id]">
+          View details &rarr;
+        </a>
+      </li>
+    }
+  </ul>
+</section>
