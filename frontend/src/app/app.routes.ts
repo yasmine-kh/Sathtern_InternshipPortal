@@ -1,7 +1,5 @@
 import { Routes } from '@angular/router';
 
-import { ComingSoon } from './components/coming-soon/coming-soon';
-
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'internships' },
   {
@@ -32,12 +30,11 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./components/my-applications/my-applications').then((m) => m.MyApplications),
   },
-  // Linked from the nav but not built yet.
   {
     path: 'admin',
     title: 'Admin',
-    component: ComingSoon,
-    data: { feature: 'Admin' },
+    loadComponent: () =>
+      import('./components/admin-dashboard/admin-dashboard').then((m) => m.AdminDashboard),
   },
   { path: '**', redirectTo: 'internships' },
 ];

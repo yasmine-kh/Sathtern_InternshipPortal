@@ -1,0 +1,229 @@
+<section class="admin">
+  <header class="admin__head">
+    <div>
+      <h1>Admin dashboard</h1>
+      <p class="subtitle">Manage internships, students and applications.</p>
+    </div>
+    <button type="button" class="ghost" (click)="refresh()">Refresh</button>
+  </header>
+
+  <p class="notice">No sign-in is required to reach this page yet.</p>
+
+  @if (state() === 'error') {
+    <div class="alert alert--error" role="alert">{{ errorMessage() }}</div>
+  }
+
+  @if (state() === 'loading') {
+    <p class="muted" role="status">Loading dashboard…</p>
+  }
+
+  @if (state() === 'loaded') {
+    @if (summary(); as stats) {
+      <ul class="tiles">
+        <li class="tile">
+          <span class="tile__value">{{ stats.totalStudents }}</span>
+          <span class="tile__label">Students</span>
+        </li>
+        <li class="tile">
+          <span class="tile__value">{{ stats.totalInternships }}</span>
+          <span class="tile__label">Internships</span>
+        </li>
+        <li class="tile">
+          <span class="tile__value">{{ stats.totalApplications }}</span>
+          <span class="tile__label">Applications</span>
+        </li>
+        @for (status of statuses; track status) {
+          <li class="tile tile--sub">
+            <span class="tile__value">{{ statusCount(status) }}</span>
+            <span [class]="badgeClass(status)">{{ status }}</span>
+          </li>
+        }
+      </ul>
+    }
+
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" [attr.aria-selected]="tab() === 'internships'"
+        [class.active]="tab() === 'internships'" (click)="selectTab('internships')">
+        Internships
+      </button>
+      <button type="button" role="tab" [attr.aria-selected]="tab() === 'students'"
+        [class.active]="tab() === 'students'" (click)="selectTab('students')">
+        Students
+      </button>
+      <button type="button" role="tab" [attr.aria-selected]="tab() === 'applications'"
+        [class.active]="tab() === 'applications'" (click)="selectTab('applications')">
+        Applications
+      </button>
+    </div>
+
+    @if (actionError()) {
+      <div class="alert alert--error" role="alert">{{ actionError() }}</div>
+    }
+
+    @if (tab() === 'internships') {
+      <div class="panel">
+        <h2>Post an internship</h2>
+
+        <form [formGroup]="newInternship" (ngSubmit)="createInternship()" novalidate class="grid-form">
+          <div class="field">
+            <label for="title">Title <span aria-hidden="true">*</span></label>
+            <input id="title" type="text" formControlName="title" />
+            @if (invalid('title')) {
+              <p class="error">A title is required.</p>
+            }
+          </div>
+
+          <div class="field">
+            <label for="company">Company <span aria-hidden="true">*</span></label>
+            <input id="company" type="text" formControlName="company" />
+            @if (invalid('company')) {
+              <p class="error">A company is required.</p>
+            }
+          </div>
+
+          <div class="field">
+            <label for="location">Location</label>
+            <input id="location" type="text" formControlName="location" />
+          </div>
+
+          <div class="field">
+            <label for="duration">Duration</label>
+            <input id="duration" type="text" formControlName="duration" />
+          </div>
+
+          <div class="field field--wide">
+            <label for="description">Description</label>
+            <textarea id="description" rows="3" formControlName="description"></textarea>
+          </div>
+
+          <button type="submit" class="submit">Create internship</button>
+        </form>
+
+        <h2 class="mt">Current internships ({{ internships().length }})</h2>
+
+        @if (internships().length === 0) {
+          <p class="muted">Nothing posted yet.</p>
+        } @else {
+          <ul class="rows">
+            @for (item of internships(); track item.id) {
+              <li class="row">
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p class="row__sub">
+                    {{ item.company }}
+                    @if (item.location) {
+                      <span>· {{ item.location }}</span>
+                    }
+                    @if (item.duration) {
+                      <span>· {{ item.duration }}</span>
+                    }
+                  </p>
+                </div>
+
+                @if (confirmingDelete() === item.id) {
+                  <div class="confirm">
+                    <span>Delete this internship and its applications?</span>
+                    <button type="button" class="danger" (click)="deleteInternship(item.id)">Yes, delete</button>
+                    <button type="button" class="ghost" (click)="cancelDelete()">Cancel</button>
+                  </div>
+                } @else {
+                  <button type="button" class="ghost" (click)="askDelete(item.id)">Delete</button>
+                }
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    }
+
+    @if (tab() === 'students') {
+      <div class="panel">
+        <h2>Registered students ({{ students().length }})</h2>
+
+        @if (students().length === 0) {
+          <p class="muted">Nobody has registered yet.</p>
+        } @else {
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>University</th>
+                  <th>Registered</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (student of students(); track student.id) {
+                  <tr>
+                    <td>{{ student.fullName }}</td>
+                    <td>{{ student.email }}</td>
+                    <td>{{ student.university ?? '—' }}</td>
+                    <td>{{ student.createdAt | date: 'mediumDate' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    }
+
+    @if (tab() === 'applications') {
+      <div class="panel">
+        <div class="panel__head">
+          <h2>Applications ({{ visibleApplications().length }})</h2>
+
+          <div class="filter">
+            <label for="statusFilter">Status</label>
+            <select id="statusFilter" [value]="statusFilter()"
+              (change)="statusFilter.set($any($event.target).value)">
+              <option value="All">All</option>
+              @for (status of statuses; track status) {
+                <option [value]="status">{{ status }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        @if (visibleApplications().length === 0) {
+          <p class="muted">No applications match this filter.</p>
+        } @else {
+          <ul class="rows">
+            @for (application of visibleApplications(); track application.id) {
+              <li class="row">
+                <div>
+                  <strong>
+                    {{ application.internship?.title ?? 'Internship #' + application.internshipId }}
+                  </strong>
+                  <p class="row__sub">
+                    {{ application.student?.fullName ?? 'Student #' + application.studentId }}
+                    @if (application.student?.email; as mail) {
+                      <span>· {{ mail }}</span>
+                    }
+                    <span>· applied {{ application.appliedDate | date: 'mediumDate' }}</span>
+                  </p>
+                </div>
+
+                <div class="row__actions">
+                  <span [class]="badgeClass(application.status)">{{ application.status }}</span>
+
+                  @if (application.status !== 'Accepted') {
+                    <button type="button" class="approve" (click)="decide(application, 'Accepted')">
+                      Approve
+                    </button>
+                  }
+                  @if (application.status !== 'Rejected') {
+                    <button type="button" class="reject" (click)="decide(application, 'Rejected')">
+                      Reject
+                    </button>
+                  }
+                </div>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    }
+  }
+</section>

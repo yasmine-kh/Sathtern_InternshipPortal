@@ -10,6 +10,18 @@ public class ApplicationRepository : Repository<Application>, IApplicationReposi
     {
     }
 
+    /// <summary>
+    /// Includes the student and internship, so callers listing every
+    /// application (the admin view) get the same embedded summaries the
+    /// filtered queries return rather than bare ids.
+    /// </summary>
+    public override async Task<IReadOnlyList<Application>> GetAllAsync()
+        => await Set.AsNoTracking()
+                    .Include(a => a.Student)
+                    .Include(a => a.Internship)
+                    .OrderByDescending(a => a.AppliedDate)
+                    .ToListAsync();
+
     public async Task<bool> HasAppliedAsync(int studentId, int internshipId)
         => await Set.AnyAsync(a => a.StudentId == studentId && a.InternshipId == internshipId);
 
