@@ -36,7 +36,8 @@ builder.Services.AddCors(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Controllers are intentionally not registered yet.
+// --- MVC / Controllers ----------------------------------------------------
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -49,6 +50,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors(AngularDevCors);
 
-// Endpoint routing will be wired up once controllers exist.
+app.MapControllers();
 
 app.Run();
