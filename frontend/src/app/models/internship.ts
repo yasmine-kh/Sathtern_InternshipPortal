@@ -1,6 +1,8 @@
-import { Application } from './application';
-
-/** Matches the backend Internship entity as serialised by the API. */
+/**
+ * Matches InternshipDto returned by the API.
+ * Navigation properties are no longer serialised, so there is no
+ * applications array here.
+ */
 export interface Internship {
   id: number;
   title: string;
@@ -10,7 +12,13 @@ export interface Internship {
   location: string | null;
   /** ISO 8601 date-time string. */
   postedDate: string;
-  applications?: Application[];
+}
+
+/** Matches InternshipSummary, nested inside an application response. */
+export interface InternshipSummary {
+  id: number;
+  title: string;
+  company: string;
 }
 
 /** Shape accepted by POST /api/Internships and PUT /api/Internships/{id}. */

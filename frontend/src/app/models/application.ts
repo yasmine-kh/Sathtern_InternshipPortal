@@ -1,21 +1,21 @@
 import { ApplicationStatus } from './application-status';
-import { Internship } from './internship';
-import { Student } from './student';
+import { InternshipSummary } from './internship';
+import { StudentSummary } from './student';
 
 /**
- * Matches the backend Application entity as serialised by the API.
- * The student/internship navigation properties are null unless the endpoint
- * explicitly loads them.
+ * Matches ApplicationDto returned by the API.
+ * The student and internship are flattened summaries, null unless the
+ * endpoint loaded them.
  */
 export interface Application {
   id: number;
   studentId: number;
-  student: Student | null;
   internshipId: number;
-  internship: Internship | null;
   status: ApplicationStatus;
   /** ISO 8601 date-time string. */
   appliedDate: string;
+  student: StudentSummary | null;
+  internship: InternshipSummary | null;
 }
 
 /** Body for POST /api/Applications. */

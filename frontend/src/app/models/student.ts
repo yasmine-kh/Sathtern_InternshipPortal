@@ -1,8 +1,7 @@
-import { Application } from './application';
-
 /**
- * Matches the backend Student entity as serialised by the API.
- * Optional backend properties come back as explicit nulls, not omitted keys.
+ * Matches StudentDto returned by the API.
+ * Navigation properties are no longer serialised, so there is no
+ * applications array here.
  */
 export interface Student {
   id: number;
@@ -12,7 +11,13 @@ export interface Student {
   university: string | null;
   /** ISO 8601 date-time string. */
   createdAt: string;
-  applications?: Application[];
+}
+
+/** Matches StudentSummary, nested inside an application response. */
+export interface StudentSummary {
+  id: number;
+  fullName: string;
+  email: string;
 }
 
 /** Shape accepted by POST /api/Students and PUT /api/Students/{id}. */

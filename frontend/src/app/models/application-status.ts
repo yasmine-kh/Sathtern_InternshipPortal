@@ -1,19 +1,14 @@
 /**
  * Mirrors the backend ApplicationStatus enum.
  *
- * The API serialises this as a NUMBER (0/1/2), not a string, because the
- * backend has no JsonStringEnumConverter configured. MySQL stores it as a
- * varchar via an EF value conversion, but that is invisible over the wire.
+ * The API serialises this as a STRING ("Pending" / "Accepted" / "Rejected"),
+ * because the backend registers a JsonStringEnumConverter in Program.cs.
  */
-export enum ApplicationStatus {
-  Pending = 0,
-  Accepted = 1,
-  Rejected = 2,
-}
+export type ApplicationStatus = 'Pending' | 'Accepted' | 'Rejected';
 
-/** Display labels, matching the names the backend dashboard returns. */
-export const APPLICATION_STATUS_LABELS: Record<ApplicationStatus, string> = {
-  [ApplicationStatus.Pending]: 'Pending',
-  [ApplicationStatus.Accepted]: 'Accepted',
-  [ApplicationStatus.Rejected]: 'Rejected',
-};
+/** All statuses, in workflow order — handy for dropdowns and filters. */
+export const APPLICATION_STATUSES: readonly ApplicationStatus[] = [
+  'Pending',
+  'Accepted',
+  'Rejected',
+] as const;
